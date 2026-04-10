@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KPTI - K-Pop Trainee Identity</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d0b1a;--panel:#1a1730;--text:#e8e0f0;--dim:#9b8fb8;
+  --accent:#e94d9a;--accent2:#a855f7;--accent3:#6366f1;
+  --grad:linear-gradient(135deg,#e94d9a,#a855f7,#6366f1);
+  --grad2:linear-gradient(135deg,#f472b6,#c084fc);
+  --R:20px;--shadow:0 8px 32px rgba(233,77,154,.15);
+}
+body{
+  font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(233,77,154,.08) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 20%,rgba(168,85,247,.08) 0%,transparent 50%),
+    radial-gradient(ellipse at 50% 80%,rgba(99,102,241,.06) 0%,transparent 50%);
+}
+.shell{max-width:520px;margin:0 auto;padding:20px 16px;position:relative;z-index:1}
+.screen{display:none}.screen.active{display:block;animation:fadeUp .5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* INTRO */
+.intro-card{text-align:center;padding:60px 24px 40px}
+.intro-logo{font-size:64px;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+.intro-title{font-size:42px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px;margin-bottom:4px}
+.intro-sub{font-size:14px;color:var(--dim);letter-spacing:3px;margin-bottom:28px}
+.intro-desc{background:var(--panel);border:1px solid rgba(233,77,154,.15);border-radius:var(--R);padding:24px;margin-bottom:32px;text-align:left;font-size:14.5px;line-height:1.8;color:var(--dim)}
+.intro-desc strong{color:var(--accent)}
+.tag{display:inline-block;background:linear-gradient(135deg,rgba(233,77,154,.15),rgba(168,85,247,.15));border:1px solid rgba(233,77,154,.2);border-radius:8px;padding:2px 8px;font-size:12px;color:#f0a0cc;margin:2px}
+.btn-main{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:700;color:#fff;background:var(--grad);cursor:pointer;transition:all .3s;box-shadow:var(--shadow);letter-spacing:1px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(233,77,154,.3)}
+.btn-main:active{transform:scale(.98)}
+.intro-note{margin-top:20px;font-size:12px;color:var(--dim);opacity:.6}
+
+/* TEST */
+.progress-wrap{position:sticky;top:0;z-index:100;background:rgba(13,11,26,.92);backdrop-filter:blur(12px);padding:16px 0 12px;margin-bottom:12px}
+.progress-bar{height:6px;background:rgba(233,77,154,.1);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--grad);border-radius:3px;transition:width .4s ease;width:0%}
+.progress-text{text-align:center;font-size:13px;color:var(--dim);margin-top:8px}
+.progress-text span{color:var(--accent);font-weight:700}
+.q-card{background:var(--panel);border:1px solid rgba(233,77,154,.08);border-radius:var(--R);padding:24px 20px;margin-bottom:16px;transition:all .3s}
+.q-card.answered{border-color:rgba(233,77,154,.25);background:linear-gradient(135deg,rgba(26,23,48,1),rgba(35,31,66,.8))}
+.q-num{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:1px}
+.q-text{font-size:16px;font-weight:500;line-height:1.7;margin-bottom:18px}
+.q-options{display:flex;flex-direction:column;gap:10px}
+.q-opt{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;border:1.5px solid rgba(233,77,154,.1);background:rgba(13,11,26,.5);cursor:pointer;transition:all .25s;font-size:14.5px;line-height:1.5;color:var(--dim)}
+.q-opt:hover{border-color:rgba(233,77,154,.3);background:rgba(233,77,154,.06);color:var(--text)}
+.q-opt input{display:none}
+.radio-dot{width:20px;height:20px;min-width:20px;border-radius:50%;border:2px solid rgba(233,77,154,.3);position:relative;transition:all .25s}
+.q-opt.selected{border-color:var(--accent);background:linear-gradient(135deg,rgba(233,77,154,.1),rgba(168,85,247,.08));color:var(--text)}
+.q-opt.selected .radio-dot{border-color:var(--accent);background:var(--accent);box-shadow:0 0 8px rgba(233,77,154,.4)}
+.q-opt.selected .radio-dot::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#fff}
+.btn-submit{width:100%;padding:18px;border:none;border-radius:16px;font-size:18px;font-weight:700;color:#fff;background:var(--grad);cursor:pointer;transition:all .3s;box-shadow:var(--shadow);margin-top:12px;letter-spacing:1px}
+.btn-submit:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-submit:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(233,77,154,.3)}
+.hint{text-align:center;color:#f87171;font-size:13px;margin-top:8px;display:none}
+
+/* RESULT */
+.r-header{padding:40px 24px 32px;background:var(--panel);border:1px solid rgba(233,77,154,.15);border-radius:var(--R);margin-bottom:16px;position:relative;overflow:hidden;text-align:center}
+.r-header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad)}
+.r-label{font-size:13px;color:var(--dim);letter-spacing:2px;margin-bottom:12px}
+.r-emoji{font-size:48px;margin-bottom:16px}
+.r-name{font-size:32px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.r-group{font-size:15px;color:var(--accent2);font-weight:600;margin-bottom:20px}
+.r-code{display:inline-block;background:linear-gradient(135deg,rgba(233,77,154,.15),rgba(168,85,247,.15));border:1px solid rgba(233,77,154,.25);border-radius:12px;padding:8px 20px;font-size:22px;font-weight:900;letter-spacing:3px;color:#f0a0cc;margin-bottom:20px}
+.r-match{font-size:15px;font-weight:600;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.r-desc{font-size:14.5px;line-height:1.85;color:var(--dim);text-align:left;padding:0 4px}
+
+.r-box{background:var(--panel);border:1px solid rgba(233,77,154,.1);border-radius:var(--R);padding:24px 20px;margin-bottom:16px}
+.r-box h3{font-size:16px;font-weight:700;margin-bottom:18px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center}
+
+.dim-row{margin-bottom:16px}.dim-row:last-child{margin-bottom:0}
+.dim-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:6px}
+.dim-bar-wrap{height:8px;background:rgba(233,77,154,.08);border-radius:4px;overflow:hidden}
+.dim-bar{height:100%;border-radius:4px;background:var(--grad);transition:width 1s ease}
+
+.trait-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.trait-tag{display:inline-block;background:linear-gradient(135deg,rgba(233,77,154,.12),rgba(168,85,247,.12));border:1px solid rgba(233,77,154,.2);border-radius:10px;padding:6px 14px;font-size:13px;color:#e0b0d0}
+
+.compat-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(233,77,154,.06);font-size:14px;color:var(--dim)}
+.compat-item:last-child{border:none}
+.compat-emoji{font-size:20px}
+.compat-label{color:var(--accent);font-weight:600;min-width:60px}
+
+.btn-share{width:100%;padding:16px;border:none;border-radius:16px;font-size:16px;font-weight:600;color:#fff;background:var(--grad);cursor:pointer;transition:all .3s;box-shadow:var(--shadow);margin-bottom:10px}
+.btn-share:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(233,77,154,.3)}
+.btn-retry{width:100%;padding:16px;border:2px solid rgba(233,77,154,.3);border-radius:16px;font-size:16px;font-weight:600;color:var(--accent);background:transparent;cursor:pointer;transition:all .3s;margin-top:8px}
+.btn-retry:hover{background:rgba(233,77,154,.08);border-color:var(--accent)}
+.footer{text-align:center;font-size:11px;color:var(--dim);opacity:.4;margin-top:32px;padding-bottom:40px}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(233,77,154,.9);color:#fff;padding:10px 24px;border-radius:12px;font-size:14px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- INTRO -->
+<section id="intro" class="screen active">
+<div class="intro-card">
+  <div class="intro-logo">🎀</div>
+  <h1 class="intro-title">KPTI</h1>
+  <p class="intro-sub">K-POP TRAINEE IDENTITY</p>
+  <div class="intro-desc">
+    <strong>你骨子里是哪位 K-Pop 女爱豆？</strong><br><br>
+    通过 20 道关于爱豆日常的灵魂拷问，从
+    <span class="tag">✨ 舞台气场</span>
+    <span class="tag">💃 练舞态度</span>
+    <span class="tag">👗 穿搭风格</span>
+    <span class="tag">🍎 身材管理</span>
+    <span class="tag">🎤 打歌方式</span>
+    五大维度，找到你的本命分身。<br><br>
+    <strong>张元英、NINGNING、金智秀、金采源、Karina</strong>... 20 位现役顶流女爱豆——<br>
+    看看你是谁的精神复制人？💖
+  </div>
+  <button class="btn-main" onclick="go('test');renderQ()">开 始 测 试 🎵</button>
+  <p class="intro-note">⏱ 大约 3 分钟 · 纯属娱乐请勿当真</p>
+</div>
+</section>
+
+<!-- TEST -->
+<section id="test" class="screen">
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+    <div class="progress-text"><span id="pCount">0</span> / 20</div>
+  </div>
+  <div id="qList"></div>
+  <button class="btn-submit" id="btnSub" disabled onclick="submit()">✨ 看看我是谁的分身</button>
+  <div class="hint" id="hint">还有题目没答完哦～向上滑动查看 💫</div>
+</section>
+
+<!-- RESULT -->
+<section id="result" class="screen">
+  <div id="rContent"></div>
+  <button class="btn-share" onclick="shareResult()">📋 复制结果分享给朋友</button>
+  <button class="btn-retry" onclick="retry()">🔄 再测一次</button>
+  <p class="footer">KPTI · K-Pop Trainee Identity · 仅供娱乐<br>数据不会上传，放心玩 🎀</p>
+</section>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DIMENSIONS =====
+const DIMS={
+  ST:{name:'舞台气场',l:'佛系划水',r:'绝对C位'},
+  PR:{name:'练舞态度',l:'天赋型选手',r:'地狱特训王'},
+  FA:{name:'穿搭风格',l:'舒服至上',r:'时尚先锋'},
+  BM:{name:'身材管理',l:'快乐干饭',r:'魔鬼自律'},
+  PF:{name:'打歌方式',l:'实力安定',r:'舞台炸裂'}
+};
+const DO=['ST','PR','FA','BM','PF'];
+
+// ===== 20 QUESTIONS =====
+const Q=[
+  // ST 1-4
+  {id:'q1',dim:'ST',text:'出道舞台，镜头怼到你脸上的那一秒——',opts:[
+    {l:'微微一笑就好，自然不做作是我的风格',v:1},
+    {l:'嘴角一勾＋眼神杀，这个 fancam 我承包了',v:2},
+    {l:'wink + 飞吻 + 比心三连击！今天的热搜是我的',v:3}]},
+  {id:'q2',dim:'ST',text:'队友在台上忘词了，全场安静了0.5秒——',opts:[
+    {l:'假装没事发生，面带微笑跳自己的 part',v:1},
+    {l:'眼神暗示她别慌，悄悄帮忙挡位',v:2},
+    {l:'大方接过 mic 即兴 ad-lib，化险为名场面',v:3}]},
+  {id:'q3',dim:'ST',text:'粉丝在机场接机举了你的巨幅海报，你？',opts:[
+    {l:'害羞低头快步走，但嘴角藏不住笑',v:1},
+    {l:'微笑挥手比个心，优雅但不过度',v:2},
+    {l:'直接走到海报前合影！还要发 Ins story',v:3}]},
+  {id:'q4',dim:'ST',text:'"爱豆最重要的素质是？"你的回答——',opts:[
+    {l:'业务能力扎实，唱跳不翻车',v:1},
+    {l:'有个人辨识度，一眼就知道是你',v:2},
+    {l:'感染力！观众跟着你哭跟着你笑才是真本事',v:3}]},
+
+  // PR 5-8
+  {id:'q5',dim:'PR',text:'公司通知下周学全新编舞，难度升级——',opts:[
+    {l:'到时候现场跟就行了，我学东西挺快的',v:1},
+    {l:'提前把歌听熟，YouTube 上看看类似风格',v:2},
+    {l:'已经在扒舞蹈室版本了，明天比老师还熟',v:3}]},
+  {id:'q6',dim:'PR',text:'凌晨 2 点，练习室只剩你一个人的灯——',opts:[
+    {l:'不可能是我，睡眠是最好的护肤品',v:1},
+    {l:'偶尔吧，但练完这段就回去了',v:2},
+    {l:'常态。killing part 不完美不准回宿舍',v:3}]},
+  {id:'q7',dim:'PR',text:'编舞老师说"这段你们自由发挥"——',opts:[
+    {l:'摆几个好看的 pose 就行，freestyle 不是我的强项',v:1},
+    {l:'把之前练过的动作拼一下，稳中求进',v:2},
+    {l:'掏出昨晚准备的三套方案！A 计划不行还有 B',v:3}]},
+  {id:'q8',dim:'PR',text:'看到自己打歌舞台的回放视频——',opts:[
+    {l:'看个大概就划走了，人要向前看',v:1},
+    {l:'主要关注表情和队形，有啥问题下次注意',v:2},
+    {l:'0.5倍速逐帧分析，这个手臂角度差了3度！',v:3}]},
+
+  // FA 9-12
+  {id:'q9',dim:'FA',text:'没行程的休息日，下楼买咖啡穿啥？',opts:[
+    {l:'卫衣+人字拖，口罩就是我的造型',v:1},
+    {l:'简单搭配一下，素颜也要有品味',v:2},
+    {l:'Every day is a runway! 全套穿搭+墨镜安排',v:3}]},
+  {id:'q10',dim:'FA',text:'造型师拿来一套你觉得巨丑的舞台服——',opts:[
+    {l:'穿呗，实力好的话穿麻袋也好看',v:1},
+    {l:'委婉提意见，看能不能换个配色',v:2},
+    {l:'谢谢，这件我穿不了！打开自己的衣橱开搭',v:3}]},
+  {id:'q11',dim:'FA',text:'逛街看到一件超贵但超好看的外套——',opts:[
+    {l:'看看就走了，衣服这东西够穿就行',v:1},
+    {l:'试一下，如果真的很搭就...咬牙买吧',v:2},
+    {l:'看到的那一秒就已经在付款了，好看即正义',v:3}]},
+  {id:'q12',dim:'FA',text:'你理想的机场造型是？',opts:[
+    {l:'运动套装+大枕头颈枕，实用第一',v:1},
+    {l:'简约质感路线，低调但有细节',v:2},
+    {l:'每次一套新 look！让站姐拍出时装周大片',v:3}]},
+
+  // BM 13-16
+  {id:'q13',dim:'BM',text:'回归前两周，公司下达"饮食管理令"——',opts:[
+    {l:'状态好比体重轻重要！该吃吃，开心最重要',v:1},
+    {l:'少吃夜宵和甜食，但不至于节食',v:2},
+    {l:'已经打开热量记录 APP，鸡胸肉时代正式开启',v:3}]},
+  {id:'q14',dim:'BM',text:'深夜直播结束，经纪人偷偷拿来一盒炸鸡——',opts:[
+    {l:'不吃对不起炸鸡的香味！直接开造',v:1},
+    {l:'吃两块...好吧三块，明天多练一小时抵消',v:2},
+    {l:'深情地闻了闻，然后递给旁边的成员。忍！',v:3}]},
+  {id:'q15',dim:'BM',text:'同团姐妹在健身房练了 2 小时还在加练——',opts:[
+    {l:'佩服佩服！然后继续躺着刷小红书',v:1},
+    {l:'有点心虚，要不也去跑步机走 30 分钟？',v:2},
+    {l:'那我练 3 小时。这叫 competitive spirit 谢谢',v:3}]},
+  {id:'q16',dim:'BM',text:'"身材管理是爱豆基本素养"你怎么看？',opts:[
+    {l:'健康比数字重要，爱自己才是真偶像',v:1},
+    {l:'适度管理是职业要求，保持状态就好',v:2},
+    {l:'完全同意！上镜＋舞台效果，专业的事要认真',v:3}]},
+
+  // PF 17-20
+  {id:'q17',dim:'PF',text:'音乐节目 live 最怕什么？',opts:[
+    {l:'跑调——所以我每个音都按教科书来',v:1},
+    {l:'表情僵硬——技术OK但缺少感染力',v:2},
+    {l:'不够炸——安全的 live 不如翻车的 live 有话题',v:3}]},
+  {id:'q18',dim:'PF',text:'拿到一首全新的歌，你第一反应——',opts:[
+    {l:'循环听三遍，先吃透旋律和调式',v:1},
+    {l:'看歌词，想想这首歌要传达什么情绪',v:2},
+    {l:'直接进录音室开唱！边唱边感受，现场出灵感',v:3}]},
+  {id:'q19',dim:'PF',text:'encore 舞台耳返突然坏了！！！',opts:[
+    {l:'跟着队友的声音小声唱，安全第一',v:1},
+    {l:'凭肌肉记忆继续，表情管理不能崩',v:2},
+    {l:'直接清唱嗨翻全场！真实才是最好的滤镜',v:3}]},
+  {id:'q20',dim:'PF',text:'用一句话定义你的舞台哲学——',opts:[
+    {l:'"零失误就是最大的诚意"——稳定之神',v:1},
+    {l:'"技术之上是情感"——氛围感拿捏',v:2},
+    {l:'"每场都当最后一场来燃"——舞台疯子',v:3}]}
+];
+
+// ===== 20 MEMBERS =====
+// pattern: [ST, PR, FA, BM, PF] each L/M/H
+const G=[
+  {code:'KPTI-01',name:'张元英',nameEn:'Jang Wonyoung',group:'IVE',emoji:'👑✨',
+   pat:['H','M','H','H','M'],
+   desc:'你就是"人间Dior"本人！天生 center 气场拉满，站在那里就是画报。练舞认真但不苦大仇深，穿搭品味堪比时尚博主，身材管理严格但你让它看起来毫不费力。你的超能力是——"好像什么都没做就已经很完美了"。',
+   tags:['👑 天生Center','🌹 人间Dior','📸 行走画报','✨ 从容碾压'],
+   best:'安宥真 (IVE)',worst:'徐彰彬 (3RACHA)'},
+
+  {code:'KPTI-02',name:'NINGNING (宁艺卓)',nameEn:'NINGNING',group:'aespa',emoji:'🎤💜',
+   pat:['M','H','M','M','H'],
+   desc:'你是开口就封神的 vocal 怪物！练习室待到凌晨只为一个转音更丝滑。舞台上的你不靠花哨的造型，靠的是一嗓子把全场钉住的能力。穿搭佛系但不碍事，你的声音就是最好的配饰。来自中国的你，用实力说话。',
+   tags:['🎤 Vocal怪物','💜 高音杀手','🇨🇳 中国骄傲','🔥 现场之神'],
+   best:'Karina (aespa)',worst:'ILLIT 怡旋'},
+
+  {code:'KPTI-03',name:'金智秀',nameEn:'Jisoo',group:'BLACKPINK',emoji:'🌸💗',
+   pat:['M','M','H','M','M'],
+   desc:'你是"长得好看是第一生产力"的活体证据。不是团里最能唱最能跳的，但你是最让人挪不开眼的那个。穿搭品味绝佳，Dior全球代言不是盖的。性格温柔但骨子里很有主见，是那种让人想当姐姐也想当妹妹的存在。',
+   tags:['🌸 人间富贵花','💄 Dior挚友','🎭 演技在线','🫰 温柔而坚定'],
+   best:'Lisa (BLACKPINK)',worst:'华莎 (MAMAMOO)'},
+
+  {code:'KPTI-04',name:'金采源',nameEn:'Kim Chaewon',group:'LE SSERAFIM',emoji:'🦋🔥',
+   pat:['H','H','M','H','H'],
+   desc:'你是从 IZ*ONE 涅槃重生的队长型人才！舞台上是冷面杀手，练习室里是地狱教官（先对自己下手那种）。身材管理严格到让队友害怕，打歌时的眼神直接让对手退赛。穿搭不张扬，但你的 abs 就是最好的穿搭。',
+   tags:['🦋 涅槃队长','💪 腹肌代言人','🔥 冷面杀手','👊 自律典范'],
+   best:'张元英 (IVE)',worst:'NINGNING (aespa)'},
+
+  {code:'KPTI-05',name:'Karina (柳智珉)',nameEn:'Karina',group:'aespa',emoji:'🤖👸',
+   pat:['H','H','H','H','H'],
+   desc:'你是 SM 造出来的"完美 AI"——但其实你比 AI 更努力。门面＋队长＋主舞＋时尚宠儿，全方位无死角。练习室通宵是基本操作，穿搭永远是热搜体质，身材管理堪称行业标杆。你唯一的缺点是...让别人找不到你的缺点。',
+   tags:['🤖 完美偶像','👸 门面担当','💎 全能ACE','📐 零死角'],
+   best:'Winter (aespa)',worst:'Haerin (NewJeans)'},
+
+  {code:'KPTI-06',name:'安宥真',nameEn:'An Yujin',group:'IVE',emoji:'🌻💛',
+   pat:['H','M','M','L','H'],
+   desc:'你是自带阳光滤镜的维他命少女！舞台气场很强但一下台就变成了团宠小可爱。练舞认真但更相信天赋直觉。穿搭嘛，简单舒服就好。身材管理？快乐干饭才是正道！打歌时的爆发力让人忘记你刚才还在吃拉面。',
+   tags:['🌻 维他命少女','💛 国民MC','🎤 舞台炸裂','🍜 快乐干饭人'],
+   best:'张元英 (IVE)',worst:'金采源 (LE SSERAFIM)'},
+
+  {code:'KPTI-07',name:'Haerin (姜海粼)',nameEn:'Haerin',group:'NewJeans',emoji:'🐱🤍',
+   pat:['L','L','H','L','M'],
+   desc:'你是"猫系爱豆"的终极形态——高冷、慵懒、但一个眼神就能让全网尖叫。练舞靠天赋足矣，身材管理？你天生就是这个体型谢谢。穿搭品味超好，安静时像高冷模特，笑起来像偷了鱼的小猫。',
+   tags:['🐱 猫系女神','🤍 高冷松弛','🎀 天赋型','👁️ 眼神杀手'],
+   best:'Danielle (NewJeans)',worst:'Karina (aespa)'},
+
+  {code:'KPTI-08',name:'Lisa (拉丽莎)',nameEn:'Lisa',group:'BLACKPINK',emoji:'💃🔥',
+   pat:['H','H','L','H','H'],
+   desc:'你是舞台上的永动机！一跳舞全世界都得闪开。YG 地下练习室锻造出的舞蹈怪物，身材管理也是魔鬼级别。穿搭嘛...能让你自由跳舞的衣服就是好衣服。台上是 girl crush 天花板，台下是泰国甜妹一枚。',
+   tags:['💃 舞蹈天才','🔥 人间永动机','🇹🇭 泰国甜妹','💪 body 管理鬼才'],
+   best:'金智秀 (BLACKPINK)',worst:'Haerin (NewJeans)'},
+
+  {code:'KPTI-09',name:'Minji (金玟池)',nameEn:'Minji',group:'NewJeans',emoji:'🐰💙',
+   pat:['H','M','M','M','M'],
+   desc:'你是"明明可以靠脸吃饭偏要靠实力"的全能队长。舞台气场大姐范儿十足但年龄其实很小，是那种让后辈害怕让前辈欣赏的存在。穿搭自然不刻意，身材管理也不极端。你的魅力是——你只是做自己就很耀眼。',
+   tags:['🐰 全能队长','💙 大姐风范','🌟 自然发光体','🎯 零废话实力派'],
+   best:'Haerin (NewJeans)',worst:'Lisa (BLACKPINK)'},
+
+  {code:'KPTI-10',name:'Sullyoon (설윤)',nameEn:'Sullyoon',group:'NMIXX',emoji:'🧚‍♀️✨',
+   pat:['M','H','H','H','M'],
+   desc:'你是那种让人怀疑"人类真的可以长这样吗？"的视觉担当。但你不甘心只做花瓶——练舞极其刻苦，身材管理严格到自己都佩服自己。穿搭也在线，从清纯到酷帅什么概念都能消化。你在默默证明：好看的人也可以很努力。',
+   tags:['🧚 人间仙女','💪 努力型美人','🎨 百变消化','📈 无限潜力'],
+   best:'张元英 (IVE)',worst:'华莎 (MAMAMOO)'},
+
+  {code:'KPTI-11',name:'华莎 (安惠真)',nameEn:'Hwasa',group:'MAMAMOO',emoji:'🎤🍕',
+   pat:['H','M','L','L','H'],
+   desc:'你是"我不 care 审美标准，我就是标准"的霸气姐姐。舞台上开口就是王炸 vocal，穿着睡衣也能把舞台变成自己的演唱会。身材管理？姐姐快乐干饭身材照样辣。穿搭？能表达自我的衣服才是好衣服。',
+   tags:['🎤 Vocal女王','🍕 快乐就好','💪 身材自信','🔥 不屑迎合'],
+   best:'Jennie (BLACKPINK)',worst:'张元英 (IVE)'},
+
+  {code:'KPTI-12',name:'Jennie (金珍妮)',nameEn:'Jennie',group:'BLACKPINK',emoji:'🖤💅',
+   pat:['H','M','H','H','H'],
+   desc:'你是"人间香奈儿"——时尚品味顶到天花板，舞台上是霸气女王，台下是撒娇小猫。练舞强度看心情但你天赋够高，身材管理严格但让你看起来只是"天生瘦"。打歌的 swag 让人自动鞠躬。你活成了所有女孩想成为的样子。',
+   tags:['🖤 人间Chanel','💅 时尚教主','🐱 反差萌','💣 Swag炸弹'],
+   best:'金智秀 (BLACKPINK)',worst:'安宥真 (IVE)'},
+
+  {code:'KPTI-13',name:'Yeji (黄礼志)',nameEn:'Yeji',group:'ITZY',emoji:'🐈‍⬛⚡',
+   pat:['H','H','L','H','H'],
+   desc:'你是训练生时代就被称为"传说"的猫科动物！一跳舞就像体内装了弹簧，身体素质堪比运动员。身材管理严格，练舞像在参加格斗训练。穿搭？能让你自由施展就行。你的眼神能在舞台上杀人，但笑起来又变成软萌小猫。',
+   tags:['🐈 猫科舞者','⚡ 身体能力怪物','💪 特种兵训练','🎯 舞台猎手'],
+   best:'Ryujin (ITZY)',worst:'Haerin (NewJeans)'},
+
+  {code:'KPTI-14',name:'田小娟',nameEn:'Jeon Soyeon',group:'(G)I-DLE',emoji:'🎨🖤',
+   pat:['H','M','M','M','H'],
+   desc:'你是女团里少见的"制作人＋队长＋rapper＋主唱＋编舞"五合一怪物。舞台上是霸气的 girl crush，录音室里是写歌写到凌晨的创作鬼才。穿搭和身材管理不是你的重点——才华才是你最好的装扮。',
+   tags:['🎨 创作天才','🖤 全能制作人','💣 Rapper女王','🧠 团队大脑'],
+   best:'华莎 (MAMAMOO)',worst:'Sullyoon (NMIXX)'},
+
+  {code:'KPTI-15',name:'Danielle (모다니엘)',nameEn:'Danielle',group:'NewJeans',emoji:'🌈🫧',
+   pat:['M','L','M','L','M'],
+   desc:'你是混血天使降临人间系列——一开口说韩语带着可爱的澳洲口音，笑起来阳光到能融化冰箱。不需要疯狂练习也能跟上所有人，不需要刻意管理也是天生好身材。你是"毫不费力"这四个字的代言人。',
+   tags:['🌈 混血天使','🫧 无攻击性','☀️ 天然治愈','🍬 甜美过载'],
+   best:'Haerin (NewJeans)',worst:'金采源 (LE SSERAFIM)'},
+
+  {code:'KPTI-16',name:'Winter (金玟庭)',nameEn:'Winter',group:'aespa',emoji:'❄️🎶',
+   pat:['M','H','M','H','H'],
+   desc:'你是 SM 声乐线的继承人，练习室的灯为你而亮。看起来安静内敛，一开口就是核弹级 vocal。身材管理也很严格——你对自己的要求永远比公司高。穿搭不出格但很舒服。你是那种"闷声做大事"的隐藏 BOSS。',
+   tags:['❄️ 冰面天使','🎶 SM声乐传承','💪 隐形卷王','🎯 完美主义者'],
+   best:'Karina (aespa)',worst:'安宥真 (IVE)'},
+
+  {code:'KPTI-17',name:'怡旋 (이서)',nameEn:'Leeseo',group:'IVE',emoji:'🍒💕',
+   pat:['M','M','M','L','M'],
+   desc:'你是"全团最小但存在感超强"的忙内！年纪轻轻就站上了顶流女团的舞台，靠的是天生的舞台感和少女甜度。练舞认真但更享受过程，穿搭可甜可酷。身材管理？姐姐们都在宠你吃东西你控制不住！',
+   tags:['🍒 甜美忙内','💕 天生舞台感','🌱 潜力无限','🍰 团宠认证'],
+   best:'张元英 (IVE)',worst:'田小娟 ((G)I-DLE)'},
+
+  {code:'KPTI-18',name:'Kazuha (中村一叶)',nameEn:'Kazuha',group:'LE SSERAFIM',emoji:'🩰🌸',
+   pat:['M','H','H','H','M'],
+   desc:'你是从芭蕾舞台跨界到 K-Pop 的优雅战士。身体控制力无人能及——毕竟 15 年芭蕾功底不是盖的。身材管理是日常习惯而非刻意为之，穿搭优雅有质感。舞台上你不靠爆发力，靠的是"每个动作都像艺术品"的极致优美。',
+   tags:['🩰 芭蕾转生','🌸 优雅武器','🇯🇵 日本玫瑰','💃 身体控制大师'],
+   best:'金采源 (LE SSERAFIM)',worst:'华莎 (MAMAMOO)'},
+
+  {code:'KPTI-19',name:'Ryujin (申留真)',nameEn:'Ryujin',group:'ITZY',emoji:'🔥💜',
+   pat:['H','H','M','M','H'],
+   desc:'你是 Girl Crush 教科书——台上酷到没朋友，台下又甜到蛀牙。舞台爆发力惊人，练舞强度能让壮汉哭泣。穿搭在酷和甜之间切换自如，身材管理适度但不极端。你的名言是"自信就是最好的 outfit"。',
+   tags:['🔥 Girl Crush','💜 反差甜酷','⚡ 爆发力怪物','🎭 双面魅力'],
+   best:'Yeji (ITZY)',worst:'Danielle (NewJeans)'},
+
+  {code:'KPTI-20',name:'Somi (全昭弥)',nameEn:'Jeon Somi',group:'Solo',emoji:'🎪🌟',
+   pat:['H','L','H','L','H'],
+   desc:'你是"选秀冠军＋solo女王＋综艺天才"三位一体的快乐偶像！舞台气场爆棚但日常是中二搞笑少女。练舞看天赋和心情，身材管理？快乐就是最好的身材。穿搭品味很 bold，打歌每次都像在开趴。你活出了所有人想活的样子——自由又快乐。',
+   tags:['🎪 综艺天才','🌟 Solo女王','🤣 快乐至上','🦋 自由灵魂'],
+   best:'安宥真 (IVE)',worst:'Winter (aespa)'}
+];
+
+// ===== STATE =====
+const ans={};
+let lastResult=null;
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderQ(){
+  const el=document.getElementById('qList');
+  el.innerHTML=Q.map((q,i)=>`
+    <div class="q-card" id="c-${q.id}">
+      <div class="q-num">Q${i+1} · ${DIMS[q.dim].name}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="q-options">
+        ${q.opts.map((o,j)=>`
+          <label class="q-opt" id="o-${q.id}-${j}" onclick="pick('${q.id}',${o.v},${j})">
+            <input type="radio" name="${q.id}" value="${o.v}">
+            <span class="radio-dot"></span>
+            <span>${o.l}</span>
+          </label>`).join('')}
+      </div>
+    </div>`).join('');
+  prog();
+}
+
+function pick(qid,val,idx){
+  ans[qid]=val;
+  Q.find(x=>x.id===qid).opts.forEach((_,j)=>{
+    document.getElementById(`o-${qid}-${j}`).classList.toggle('selected',j===idx);
+  });
+  document.getElementById(`c-${qid}`).classList.add('answered');
+  prog();
+}
+
+function prog(){
+  const n=Object.keys(ans).length;
+  document.getElementById('pCount').textContent=n;
+  document.getElementById('pFill').style.width=`${(n/20)*100}%`;
+  document.getElementById('btnSub').disabled=n<20;
+  document.getElementById('hint').style.display='none';
+}
+
+function submit(){
+  if(Object.keys(ans).length<20){
+    document.getElementById('hint').style.display='block';
+    const f=Q.find(q=>!ans[q.id]);
+    if(f)document.getElementById(`c-${f.id}`).scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  const r=compute();
+  lastResult=r;
+  render(r);
+  go('result');
+}
+
+function compute(){
+  const sc={};DO.forEach(d=>sc[d]=0);
+  Q.forEach(q=>{sc[q.dim]+=(ans[q.id]||0)});
+  // 4 questions per dim, range 4-12: 4-6=L, 7-9=M, 10-12=H
+  const lv={};
+  DO.forEach(d=>{const s=sc[d];lv[d]=s<=6?'L':s<=9?'M':'H'});
+  const ln=l=>l==='L'?1:l==='M'?2:3;
+  const uv=DO.map(d=>ln(lv[d]));
+  const ranked=G.map(g=>{
+    const gv=g.pat.map(l=>ln(l));
+    const dist=Math.sqrt(gv.reduce((s,v,i)=>s+(v-uv[i])**2,0));
+    const mx=Math.sqrt(5*4);
+    return{...g,dist,sim:Math.round((1-dist/mx)*100),lv,sc};
+  }).sort((a,b)=>a.dist-b.dist);
+  return ranked[0];
+}
+
+function render(r){
+  const el=document.getElementById('rContent');
+  el.innerHTML=`
+    <div class="r-header">
+      <div class="r-label">✨ 你的 K-Pop 分身是</div>
+      <div class="r-emoji">${r.emoji}</div>
+      <div class="r-name">${r.name}</div>
+      <div class="r-group">${r.group}</div>
+      <div class="r-code">${r.code}</div>
+      <div class="r-match">匹配度 ${r.sim}%</div>
+      <div class="r-desc">${r.desc}</div>
+    </div>
+
+    <div class="r-box">
+      <h3>📊 你的五维雷达</h3>
+      ${DO.map(d=>{
+        const pct=Math.round(((r.sc[d]-4)/8)*100);
+        return`<div class="dim-row">
+          <div class="dim-labels"><span>${DIMS[d].l}</span><span>${DIMS[d].name}</span><span>${DIMS[d].r}</span></div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:${pct}%"></div></div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="r-box">
+      <h3>🏷️ 你的爱豆标签</h3>
+      <div class="trait-tags">${r.tags.map(t=>`<span class="trait-tag">${t}</span>`).join('')}</div>
+    </div>
+
+    <div class="r-box">
+      <h3>💫 缘分组合</h3>
+      <div class="compat-item">
+        <span class="compat-emoji">💖</span>
+        <span class="compat-label">最佳拍档</span>
+        <span>${r.best} — 同框必出名场面</span>
+      </div>
+      <div class="compat-item">
+        <span class="compat-emoji">⚡</span>
+        <span class="compat-label">火花CP</span>
+        <span>${r.worst} — 风格相反但同台超炸</span>
+      </div>
+    </div>
+  `;
+  setTimeout(()=>{
+    document.querySelectorAll('.dim-bar').forEach(b=>{b.style.width=b.style.width});
+  },100);
+}
+
+function shareResult(){
+  if(!lastResult) return;
+  const r=lastResult;
+  const text=`🎀 KPTI 测试结果\n\n我的 K-Pop 分身是：${r.emoji} ${r.name}（${r.group}）\n匹配度：${r.sim}%\n\n${r.tags.join(' ')}\n\n"${r.desc.slice(0,60)}..."\n\n来测测你是谁 👉 ${location.href}`;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>showToast('已复制到剪贴板！发给朋友们吧 💕'));
+  }else{
+    const ta=document.createElement('textarea');
+    ta.value=text;document.body.appendChild(ta);
+    ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('已复制到剪贴板！💕');
+  }
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function retry(){
+  Object.keys(ans).forEach(k=>delete ans[k]);
+  lastResult=null;
+  go('intro');
+}
+</script>
+</body>
+</html>
