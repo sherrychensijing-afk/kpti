@@ -91,10 +91,6 @@ body::before{
 .trait-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .trait-tag{display:inline-block;background:linear-gradient(135deg,rgba(233,77,154,.12),rgba(168,85,247,.12));border:1px solid rgba(233,77,154,.2);border-radius:10px;padding:6px 14px;font-size:13px;color:#e0b0d0}
 
-.compat-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(233,77,154,.06);font-size:14px;color:var(--dim)}
-.compat-item:last-child{border:none}
-.compat-emoji{font-size:20px}
-.compat-label{color:var(--accent);font-weight:600;min-width:60px}
 
 .btn-share{width:100%;padding:16px;border:none;border-radius:16px;font-size:16px;font-weight:600;color:#fff;background:var(--grad);cursor:pointer;transition:all .3s;box-shadow:var(--shadow);margin-bottom:10px}
 .btn-share:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(233,77,154,.3)}
@@ -294,121 +290,101 @@ const G=[
    pat:['H','M','H','H','M'],
    desc:'你就是"人间Dior"本人！天生 center 气场拉满，站在那里就是画报。练舞认真但不苦大仇深，穿搭品味堪比时尚博主，身材管理严格但你让它看起来毫不费力。你的超能力是——"好像什么都没做就已经很完美了"。',
    tags:['👑 天生Center','🌹 人间Dior','📸 行走画报','✨ 从容碾压'],
-   best:'安宥真 (IVE)',worst:'徐彰彬 (3RACHA)'},
 
   {code:'KPTI-02',name:'NINGNING (宁艺卓)',nameEn:'NINGNING',group:'aespa',emoji:'🎤💜',
    pat:['M','H','M','M','H'],
    desc:'你是开口就封神的 vocal 怪物！练习室待到凌晨只为一个转音更丝滑。舞台上的你不靠花哨的造型，靠的是一嗓子把全场钉住的能力。穿搭佛系但不碍事，你的声音就是最好的配饰。来自中国的你，用实力说话。',
    tags:['🎤 Vocal怪物','💜 高音杀手','🇨🇳 中国骄傲','🔥 现场之神'],
-   best:'Karina (aespa)',worst:'ILLIT 怡旋'},
 
   {code:'KPTI-03',name:'金智秀',nameEn:'Jisoo',group:'BLACKPINK',emoji:'🌸💗',
    pat:['M','M','H','M','M'],
    desc:'你是"长得好看是第一生产力"的活体证据。不是团里最能唱最能跳的，但你是最让人挪不开眼的那个。穿搭品味绝佳，Dior全球代言不是盖的。性格温柔但骨子里很有主见，是那种让人想当姐姐也想当妹妹的存在。',
    tags:['🌸 人间富贵花','💄 Dior挚友','🎭 演技在线','🫰 温柔而坚定'],
-   best:'Lisa (BLACKPINK)',worst:'华莎 (MAMAMOO)'},
 
   {code:'KPTI-04',name:'金采源',nameEn:'Kim Chaewon',group:'LE SSERAFIM',emoji:'🦋🔥',
    pat:['H','H','M','H','H'],
    desc:'你是从 IZ*ONE 涅槃重生的队长型人才！舞台上是冷面杀手，练习室里是地狱教官（先对自己下手那种）。身材管理严格到让队友害怕，打歌时的眼神直接让对手退赛。穿搭不张扬，但你的 abs 就是最好的穿搭。',
    tags:['🦋 涅槃队长','💪 腹肌代言人','🔥 冷面杀手','👊 自律典范'],
-   best:'张元英 (IVE)',worst:'NINGNING (aespa)'},
 
   {code:'KPTI-05',name:'Karina (柳智珉)',nameEn:'Karina',group:'aespa',emoji:'🤖👸',
    pat:['H','H','H','H','H'],
    desc:'你是 SM 造出来的"完美 AI"——但其实你比 AI 更努力。门面＋队长＋主舞＋时尚宠儿，全方位无死角。练习室通宵是基本操作，穿搭永远是热搜体质，身材管理堪称行业标杆。你唯一的缺点是...让别人找不到你的缺点。',
    tags:['🤖 完美偶像','👸 门面担当','💎 全能ACE','📐 零死角'],
-   best:'Winter (aespa)',worst:'Haerin (NewJeans)'},
 
   {code:'KPTI-06',name:'安宥真',nameEn:'An Yujin',group:'IVE',emoji:'🌻💛',
    pat:['H','M','M','L','H'],
    desc:'你是自带阳光滤镜的维他命少女！舞台气场很强但一下台就变成了团宠小可爱。练舞认真但更相信天赋直觉。穿搭嘛，简单舒服就好。身材管理？快乐干饭才是正道！打歌时的爆发力让人忘记你刚才还在吃拉面。',
    tags:['🌻 维他命少女','💛 国民MC','🎤 舞台炸裂','🍜 快乐干饭人'],
-   best:'张元英 (IVE)',worst:'金采源 (LE SSERAFIM)'},
 
   {code:'KPTI-07',name:'Haerin (姜海粼)',nameEn:'Haerin',group:'NewJeans',emoji:'🐱🤍',
    pat:['L','L','H','L','M'],
    desc:'你是"猫系爱豆"的终极形态——高冷、慵懒、但一个眼神就能让全网尖叫。练舞靠天赋足矣，身材管理？你天生就是这个体型谢谢。穿搭品味超好，安静时像高冷模特，笑起来像偷了鱼的小猫。',
    tags:['🐱 猫系女神','🤍 高冷松弛','🎀 天赋型','👁️ 眼神杀手'],
-   best:'Danielle (NewJeans)',worst:'Karina (aespa)'},
 
   {code:'KPTI-08',name:'Lisa (拉丽莎)',nameEn:'Lisa',group:'BLACKPINK',emoji:'💃🔥',
    pat:['H','H','L','H','H'],
    desc:'你是舞台上的永动机！一跳舞全世界都得闪开。YG 地下练习室锻造出的舞蹈怪物，身材管理也是魔鬼级别。穿搭嘛...能让你自由跳舞的衣服就是好衣服。台上是 girl crush 天花板，台下是泰国甜妹一枚。',
    tags:['💃 舞蹈天才','🔥 人间永动机','🇹🇭 泰国甜妹','💪 body 管理鬼才'],
-   best:'金智秀 (BLACKPINK)',worst:'Haerin (NewJeans)'},
 
   {code:'KPTI-09',name:'Minji (金玟池)',nameEn:'Minji',group:'NewJeans',emoji:'🐰💙',
    pat:['H','M','M','M','M'],
    desc:'你是"明明可以靠脸吃饭偏要靠实力"的全能队长。舞台气场大姐范儿十足但年龄其实很小，是那种让后辈害怕让前辈欣赏的存在。穿搭自然不刻意，身材管理也不极端。你的魅力是——你只是做自己就很耀眼。',
    tags:['🐰 全能队长','💙 大姐风范','🌟 自然发光体','🎯 零废话实力派'],
-   best:'Haerin (NewJeans)',worst:'Lisa (BLACKPINK)'},
 
   {code:'KPTI-10',name:'Sullyoon (설윤)',nameEn:'Sullyoon',group:'NMIXX',emoji:'🧚‍♀️✨',
    pat:['M','H','H','H','M'],
    desc:'你是那种让人怀疑"人类真的可以长这样吗？"的视觉担当。但你不甘心只做花瓶——练舞极其刻苦，身材管理严格到自己都佩服自己。穿搭也在线，从清纯到酷帅什么概念都能消化。你在默默证明：好看的人也可以很努力。',
    tags:['🧚 人间仙女','💪 努力型美人','🎨 百变消化','📈 无限潜力'],
-   best:'张元英 (IVE)',worst:'华莎 (MAMAMOO)'},
 
   {code:'KPTI-11',name:'华莎 (安惠真)',nameEn:'Hwasa',group:'MAMAMOO',emoji:'🎤🍕',
    pat:['H','M','L','L','H'],
    desc:'你是"我不 care 审美标准，我就是标准"的霸气姐姐。舞台上开口就是王炸 vocal，穿着睡衣也能把舞台变成自己的演唱会。身材管理？姐姐快乐干饭身材照样辣。穿搭？能表达自我的衣服才是好衣服。',
    tags:['🎤 Vocal女王','🍕 快乐就好','💪 身材自信','🔥 不屑迎合'],
-   best:'Jennie (BLACKPINK)',worst:'张元英 (IVE)'},
 
   {code:'KPTI-12',name:'Jennie (金珍妮)',nameEn:'Jennie',group:'BLACKPINK',emoji:'🖤💅',
    pat:['H','M','H','H','H'],
    desc:'你是"人间香奈儿"——时尚品味顶到天花板，舞台上是霸气女王，台下是撒娇小猫。练舞强度看心情但你天赋够高，身材管理严格但让你看起来只是"天生瘦"。打歌的 swag 让人自动鞠躬。你活成了所有女孩想成为的样子。',
    tags:['🖤 人间Chanel','💅 时尚教主','🐱 反差萌','💣 Swag炸弹'],
-   best:'金智秀 (BLACKPINK)',worst:'安宥真 (IVE)'},
 
   {code:'KPTI-13',name:'Yeji (黄礼志)',nameEn:'Yeji',group:'ITZY',emoji:'🐈‍⬛⚡',
    pat:['H','H','L','H','H'],
    desc:'你是训练生时代就被称为"传说"的猫科动物！一跳舞就像体内装了弹簧，身体素质堪比运动员。身材管理严格，练舞像在参加格斗训练。穿搭？能让你自由施展就行。你的眼神能在舞台上杀人，但笑起来又变成软萌小猫。',
    tags:['🐈 猫科舞者','⚡ 身体能力怪物','💪 特种兵训练','🎯 舞台猎手'],
-   best:'Ryujin (ITZY)',worst:'Haerin (NewJeans)'},
 
   {code:'KPTI-14',name:'田小娟',nameEn:'Jeon Soyeon',group:'(G)I-DLE',emoji:'🎨🖤',
    pat:['H','M','M','M','H'],
    desc:'你是女团里少见的"制作人＋队长＋rapper＋主唱＋编舞"五合一怪物。舞台上是霸气的 girl crush，录音室里是写歌写到凌晨的创作鬼才。穿搭和身材管理不是你的重点——才华才是你最好的装扮。',
    tags:['🎨 创作天才','🖤 全能制作人','💣 Rapper女王','🧠 团队大脑'],
-   best:'华莎 (MAMAMOO)',worst:'Sullyoon (NMIXX)'},
 
   {code:'KPTI-15',name:'Danielle (모다니엘)',nameEn:'Danielle',group:'NewJeans',emoji:'🌈🫧',
    pat:['M','L','M','L','M'],
    desc:'你是混血天使降临人间系列——一开口说韩语带着可爱的澳洲口音，笑起来阳光到能融化冰箱。不需要疯狂练习也能跟上所有人，不需要刻意管理也是天生好身材。你是"毫不费力"这四个字的代言人。',
    tags:['🌈 混血天使','🫧 无攻击性','☀️ 天然治愈','🍬 甜美过载'],
-   best:'Haerin (NewJeans)',worst:'金采源 (LE SSERAFIM)'},
 
   {code:'KPTI-16',name:'Winter (金玟庭)',nameEn:'Winter',group:'aespa',emoji:'❄️🎶',
    pat:['M','H','M','H','H'],
    desc:'你是 SM 声乐线的继承人，练习室的灯为你而亮。看起来安静内敛，一开口就是核弹级 vocal。身材管理也很严格——你对自己的要求永远比公司高。穿搭不出格但很舒服。你是那种"闷声做大事"的隐藏 BOSS。',
    tags:['❄️ 冰面天使','🎶 SM声乐传承','💪 隐形卷王','🎯 完美主义者'],
-   best:'Karina (aespa)',worst:'安宥真 (IVE)'},
 
-  {code:'KPTI-17',name:'怡旋 (이서)',nameEn:'Leeseo',group:'IVE',emoji:'🍒💕',
+  {code:'KPTI-17',name:'李贤瑞 (이서)',nameEn:'Leeseo',group:'IVE',emoji:'🍒💕',
    pat:['M','M','M','L','M'],
    desc:'你是"全团最小但存在感超强"的忙内！年纪轻轻就站上了顶流女团的舞台，靠的是天生的舞台感和少女甜度。练舞认真但更享受过程，穿搭可甜可酷。身材管理？姐姐们都在宠你吃东西你控制不住！',
    tags:['🍒 甜美忙内','💕 天生舞台感','🌱 潜力无限','🍰 团宠认证'],
-   best:'张元英 (IVE)',worst:'田小娟 ((G)I-DLE)'},
 
   {code:'KPTI-18',name:'Kazuha (中村一叶)',nameEn:'Kazuha',group:'LE SSERAFIM',emoji:'🩰🌸',
    pat:['M','H','H','H','M'],
    desc:'你是从芭蕾舞台跨界到 K-Pop 的优雅战士。身体控制力无人能及——毕竟 15 年芭蕾功底不是盖的。身材管理是日常习惯而非刻意为之，穿搭优雅有质感。舞台上你不靠爆发力，靠的是"每个动作都像艺术品"的极致优美。',
    tags:['🩰 芭蕾转生','🌸 优雅武器','🇯🇵 日本玫瑰','💃 身体控制大师'],
-   best:'金采源 (LE SSERAFIM)',worst:'华莎 (MAMAMOO)'},
 
   {code:'KPTI-19',name:'Ryujin (申留真)',nameEn:'Ryujin',group:'ITZY',emoji:'🔥💜',
    pat:['H','H','M','M','H'],
    desc:'你是 Girl Crush 教科书——台上酷到没朋友，台下又甜到蛀牙。舞台爆发力惊人，练舞强度能让壮汉哭泣。穿搭在酷和甜之间切换自如，身材管理适度但不极端。你的名言是"自信就是最好的 outfit"。',
    tags:['🔥 Girl Crush','💜 反差甜酷','⚡ 爆发力怪物','🎭 双面魅力'],
-   best:'Yeji (ITZY)',worst:'Danielle (NewJeans)'},
 
   {code:'KPTI-20',name:'Somi (全昭弥)',nameEn:'Jeon Somi',group:'Solo',emoji:'🎪🌟',
    pat:['H','L','H','L','H'],
    desc:'你是"选秀冠军＋solo女王＋综艺天才"三位一体的快乐偶像！舞台气场爆棚但日常是中二搞笑少女。练舞看天赋和心情，身材管理？快乐就是最好的身材。穿搭品味很 bold，打歌每次都像在开趴。你活出了所有人想活的样子——自由又快乐。',
    tags:['🎪 综艺天才','🌟 Solo女王','🤣 快乐至上','🦋 自由灵魂'],
-   best:'安宥真 (IVE)',worst:'Winter (aespa)'}
 ];
 
 // ===== STATE =====
@@ -515,19 +491,6 @@ function render(r){
       <div class="trait-tags">${r.tags.map(t=>`<span class="trait-tag">${t}</span>`).join('')}</div>
     </div>
 
-    <div class="r-box">
-      <h3>💫 缘分组合</h3>
-      <div class="compat-item">
-        <span class="compat-emoji">💖</span>
-        <span class="compat-label">最佳拍档</span>
-        <span>${r.best} — 同框必出名场面</span>
-      </div>
-      <div class="compat-item">
-        <span class="compat-emoji">⚡</span>
-        <span class="compat-label">火花CP</span>
-        <span>${r.worst} — 风格相反但同台超炸</span>
-      </div>
-    </div>
   `;
   setTimeout(()=>{
     document.querySelectorAll('.dim-bar').forEach(b=>{b.style.width=b.style.width});
