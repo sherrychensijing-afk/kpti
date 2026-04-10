@@ -98,12 +98,28 @@ body::before{
 
 .btn-share{width:100%;padding:16px;border:none;border-radius:16px;font-size:16px;font-weight:600;color:#fff;background:var(--grad);cursor:pointer;transition:all .3s;box-shadow:var(--shadow);margin-bottom:10px}
 .btn-share:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(233,77,154,.3)}
+.btn-debut{width:100%;padding:16px;border:none;border-radius:16px;font-size:16px;font-weight:600;color:#fff;background:linear-gradient(135deg,#6366f1,#a855f7,#e94d9a);cursor:pointer;transition:all .3s;box-shadow:0 8px 32px rgba(99,102,241,.2);margin-bottom:10px;letter-spacing:1px;position:relative;overflow:hidden}
+.btn-debut::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(255,255,255,.1),transparent);animation:shimmer 3s ease infinite}
+.btn-debut:hover{transform:translateY(-2px);box-shadow:0 0 24px rgba(99,102,241,.4)}
 .btn-retry{width:100%;padding:16px;border:2px solid rgba(233,77,154,.3);border-radius:16px;font-size:16px;font-weight:600;color:var(--accent);background:transparent;cursor:pointer;transition:all .3s;margin-top:8px}
 .btn-retry:hover{background:rgba(233,77,154,.08);border-color:var(--accent)}
 .footer{text-align:center;font-size:11px;color:var(--dim);opacity:.4;margin-top:32px;padding-bottom:40px}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(233,77,154,.9);color:#fff;padding:10px 24px;border-radius:12px;font-size:14px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.show{opacity:1}
+
+/* SHARE IMAGE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--panel);border:1px solid rgba(233,77,154,.2);border-radius:24px;padding:24px;max-width:400px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:fadeUp .3s ease}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:none;background:rgba(233,77,154,.15);border-radius:50%;color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:rgba(233,77,154,.3)}
+.modal-title{text-align:center;font-size:16px;font-weight:700;margin-bottom:16px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.share-canvas-wrap{text-align:center;margin-bottom:16px}
+.share-canvas-wrap canvas{max-width:100%;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.btn-save-img{width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:600;color:#fff;background:var(--grad);cursor:pointer;transition:all .3s;box-shadow:var(--shadow)}
+.btn-save-img:hover{transform:translateY(-2px)}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 </head>
 <body>
 <div class="shell">
@@ -145,7 +161,10 @@ body::before{
 <!-- RESULT -->
 <section id="result" class="screen">
   <div id="rContent"></div>
-  <button class="btn-share" onclick="shareResult()">📋 复制结果分享给朋友</button>
+  <button class="btn-share" onclick="genShareImage()">🖼️ 生成分享图</button>
+  <a href="https://y.qq.com/n3/venus/pages/ism_event_detail/index.html?event_id=100966&_hidehd=1&_miniplayer=1&adtag=huodong_KPTI" target="_blank" style="text-decoration:none;display:block">
+    <button class="btn-debut" type="button">🎵 给自己写一首出道曲</button>
+  </a>
   <button class="btn-retry" onclick="retry()">🔄 再测一次</button>
   <p class="footer">KPTI · K-Pop Trainee Identity · 仅供娱乐<br>数据不会上传，放心玩 🎀</p>
 </section>
@@ -153,6 +172,16 @@ body::before{
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- SHARE IMAGE MODAL -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeShareModal()">&times;</button>
+    <div class="modal-title">📸 长按保存分享图</div>
+    <div class="share-canvas-wrap" id="shareCanvasWrap"></div>
+    <button class="btn-save-img" onclick="saveShareImage()">💾 保存图片</button>
+  </div>
+</div>
 
 <script>
 // ===== DIMENSIONS =====
@@ -518,6 +547,198 @@ function shareResult(){
     document.body.removeChild(ta);
     showToast('已复制到剪贴板！💕');
   }
+}
+
+// ===== QR CODE (using qrcode-generator lib loaded below) =====
+function makeQR(url){
+  const qr=qrcode(0,'L');
+  qr.addData(url);
+  qr.make();
+  return qr;
+}
+
+function genShareImage(){
+  if(!lastResult)return;
+  const r=lastResult;
+  const W=720,H=1080;
+  const cvs=document.createElement('canvas');
+  cvs.width=W;cvs.height=H;
+  const ctx=cvs.getContext('2d');
+
+  // Background gradient
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#0d0b1a');bg.addColorStop(0.5,'#1a1230');bg.addColorStop(1,'#0d0b1a');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  // Decorative glow circles
+  ctx.globalAlpha=0.08;
+  ctx.fillStyle='#e94d9a';ctx.beginPath();ctx.arc(100,200,200,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#a855f7';ctx.beginPath();ctx.arc(620,400,250,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#6366f1';ctx.beginPath();ctx.arc(300,900,180,0,Math.PI*2);ctx.fill();
+  ctx.globalAlpha=1;
+
+  // Top border gradient line
+  const topLine=ctx.createLinearGradient(0,0,W,0);
+  topLine.addColorStop(0,'#e94d9a');topLine.addColorStop(0.5,'#a855f7');topLine.addColorStop(1,'#6366f1');
+  ctx.fillStyle=topLine;ctx.fillRect(0,0,W,4);
+
+  // Title
+  ctx.textAlign='center';
+  ctx.font='900 48px "Noto Sans SC", sans-serif';
+  const titleGrad=ctx.createLinearGradient(W/2-100,60,W/2+100,60);
+  titleGrad.addColorStop(0,'#e94d9a');titleGrad.addColorStop(0.5,'#a855f7');titleGrad.addColorStop(1,'#6366f1');
+  ctx.fillStyle=titleGrad;
+  ctx.fillText('KPTI',W/2,75);
+
+  ctx.font='300 14px "Noto Sans SC", sans-serif';
+  ctx.fillStyle='#9b8fb8';
+  ctx.fillText('K-POP TRAINEE IDENTITY',W/2,100);
+
+  // Subtitle
+  ctx.font='400 16px "Noto Sans SC", sans-serif';
+  ctx.fillStyle='#9b8fb8';
+  ctx.fillText('✨ 我的 K-Pop 分身是',W/2,150);
+
+  // Emoji
+  ctx.font='64px serif';
+  ctx.fillText(r.emoji,W/2,230);
+
+  // Name
+  ctx.font='900 42px "Noto Sans SC", sans-serif';
+  const nameGrad=ctx.createLinearGradient(W/2-80,268,W/2+80,268);
+  nameGrad.addColorStop(0,'#e94d9a');nameGrad.addColorStop(0.5,'#a855f7');nameGrad.addColorStop(1,'#6366f1');
+  ctx.fillStyle=nameGrad;
+  ctx.fillText(r.name,W/2,280);
+
+  // Group
+  ctx.font='600 20px "Noto Sans SC", sans-serif';
+  ctx.fillStyle='#a855f7';
+  ctx.fillText(r.group,W/2,315);
+
+  // Code badge
+  const codeW=180,codeH=44,codeX=W/2-codeW/2,codeY=335;
+  ctx.fillStyle='rgba(233,77,154,0.12)';
+  roundRect(ctx,codeX,codeY,codeW,codeH,12);ctx.fill();
+  ctx.strokeStyle='rgba(233,77,154,0.3)';ctx.lineWidth=1;
+  roundRect(ctx,codeX,codeY,codeW,codeH,12);ctx.stroke();
+  ctx.font='900 22px "Noto Sans SC", sans-serif';
+  ctx.fillStyle='#f0a0cc';ctx.textAlign='center';
+  ctx.fillText(r.code,W/2,365);
+
+  // Match %
+  ctx.font='600 18px "Noto Sans SC", sans-serif';
+  const matchGrad=ctx.createLinearGradient(W/2-40,400,W/2+40,400);
+  matchGrad.addColorStop(0,'#e94d9a');matchGrad.addColorStop(1,'#a855f7');
+  ctx.fillStyle=matchGrad;
+  ctx.fillText('匹配度 '+r.sim+'%',W/2,405);
+
+  // Description box
+  ctx.fillStyle='rgba(26,23,48,0.8)';
+  roundRect(ctx,40,430,W-80,180,16);ctx.fill();
+  ctx.strokeStyle='rgba(233,77,154,0.1)';ctx.lineWidth=1;
+  roundRect(ctx,40,430,W-80,180,16);ctx.stroke();
+
+  ctx.textAlign='left';ctx.font='400 15px "Noto Sans SC", sans-serif';ctx.fillStyle='#c0b0d8';
+  wrapText(ctx,r.desc,60,460,W-120,22);
+
+  // Tags
+  ctx.textAlign='center';
+  const tagY=635;
+  ctx.font='400 14px "Noto Sans SC", sans-serif';
+  const tagStr=r.tags.join('  ');
+  ctx.fillStyle='#e0b0d0';
+  ctx.fillText(tagStr,W/2,tagY);
+
+  // Dimensions mini bars
+  const barStartY=675;
+  DO.forEach((d,i)=>{
+    const y=barStartY+i*40;
+    const pct=Math.round(((r.sc[d]-4)/8)*100);
+    ctx.textAlign='left';ctx.font='400 12px "Noto Sans SC", sans-serif';ctx.fillStyle='#9b8fb8';
+    ctx.fillText(DIMS[d].name,60,y+4);
+    // Bar bg
+    ctx.fillStyle='rgba(233,77,154,0.08)';
+    roundRect(ctx,160,y-6,400,12,6);ctx.fill();
+    // Bar fill
+    const barGrad=ctx.createLinearGradient(160,0,160+400,0);
+    barGrad.addColorStop(0,'#e94d9a');barGrad.addColorStop(0.5,'#a855f7');barGrad.addColorStop(1,'#6366f1');
+    ctx.fillStyle=barGrad;
+    roundRect(ctx,160,y-6,400*(pct/100),12,6);ctx.fill();
+    // Pct text
+    ctx.textAlign='right';ctx.fillStyle='#f0a0cc';ctx.font='600 12px "Noto Sans SC", sans-serif';
+    ctx.fillText(pct+'%',W-60,y+4);
+  });
+
+  // QR Code section
+  const qrY=895;
+  ctx.textAlign='center';ctx.font='400 13px "Noto Sans SC", sans-serif';ctx.fillStyle='#9b8fb8';
+  ctx.fillText('扫码来测测你是谁的分身 👇',W/2,qrY-10);
+
+  // Generate QR
+  const qrUrl='https://sherrychensijing-afk.github.io/kpti/';
+  const qr=makeQR(qrUrl);
+  const qrCount=qr.getModuleCount();
+  const qrSize=120;
+  const cellSize=qrSize/qrCount;
+  const qrX=W/2-qrSize/2;
+  const qrYPos=qrY;
+
+  // QR background
+  ctx.fillStyle='#ffffff';
+  roundRect(ctx,qrX-8,qrYPos-8,qrSize+16,qrSize+16,12);ctx.fill();
+
+  // QR modules
+  for(let row=0;row<qrCount;row++){
+    for(let col=0;col<qrCount;col++){
+      if(qr.isDark(row,col)){
+        ctx.fillStyle='#1a1230';
+        ctx.fillRect(qrX+col*cellSize,qrYPos+row*cellSize,cellSize+0.5,cellSize+0.5);
+      }
+    }
+  }
+
+  // Footer
+  ctx.textAlign='center';ctx.font='300 11px "Noto Sans SC", sans-serif';ctx.fillStyle='rgba(155,143,184,0.5)';
+  ctx.fillText('KPTI · K-Pop Trainee Identity · 仅供娱乐',W/2,H-20);
+
+  // Show modal
+  const wrap=document.getElementById('shareCanvasWrap');
+  wrap.innerHTML='';
+  wrap.appendChild(cvs);
+  document.getElementById('shareModal').classList.add('show');
+}
+
+function closeShareModal(){
+  document.getElementById('shareModal').classList.remove('show');
+}
+
+function saveShareImage(){
+  const cvs=document.querySelector('#shareCanvasWrap canvas');
+  if(!cvs)return;
+  const link=document.createElement('a');
+  link.download='KPTI-'+lastResult.code+'.png';
+  link.href=cvs.toDataURL('image/png');
+  link.click();
+  showToast('图片已保存 💕');
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+
+function wrapText(ctx,text,x,y,maxW,lineH){
+  let line='';
+  for(let i=0;i<text.length;i++){
+    const test=line+text[i];
+    if(ctx.measureText(test).width>maxW&&line.length>0){
+      ctx.fillText(line,x,y);y+=lineH;line=text[i];
+    }else{line=test}
+  }
+  if(line)ctx.fillText(line,x,y);
 }
 
 function showToast(msg){
